@@ -1,0 +1,131 @@
+Sub Stocks() 
+
+ Dim Looper As Long 
+ Dim Symbol1 As String 
+ Dim Symbol2 As String 
+ Dim open_price As Double 
+ Dim close_price As Double 
+ Dim tot_vol As Double  
+ Dim tot_int As Double 
+                
+ Symbol1 = "START"  
+ Symbol2 = "START"
+ open_price = Cells(2, 3).Value
+ tot_vol = Cells(2, 7).Value
+ tot_int = 2
+
+ Range("I1").Value = "Ticker" 
+ Range("J1").Value = "Yearly Change"
+ Range("K1").Value = "Percent Change"
+ Range("L1").Value = "Total Stock Volume"
+ Range("I1:L1").Interior.ColorIndex = 15
+ Range("I1:L1").Borders(xlEdgeBottom).LineStyle = xlContinuous
+      
+ For Looper = 2 To 1048576  
+
+   Symbol1 = Cells(Looper, 1).Value 
+   Symbol2 = Cells(Looper + 1, 1).Value   
+    
+   If Symbol1 = Symbol2 Then    
+     tot_vol = tot_vol + Cells(Looper + 1, 7).Value
+     close_price = Cells(Looper + 1, 6).Value
+   Else  
+     Cells(tot_int, 9).Value = Symbol1
+     Cells(tot_int, 10).Value = close_price - open_price
+     
+       If close_price > open_price Then
+           Cells(tot_int, 10).Interior.ColorIndex = 4
+       ElseIf close_price < open_price Then
+           Cells(tot_int, 10).Interior.ColorIndex = 3
+       End If
+     
+     If open_price <> 0 Then 
+           Cells(tot_int, 11).Value = (close_price - open_price) / open_price
+     Else
+           Cells(tot_int, 11).Value = "N/A"
+     End If  
+        Cells(tot_int, 11).NumberFormat = "0.00%"
+     
+Cells(tot_int, 12).Value = tot_vol
+     
+     Symbol1 = Symbol2 
+     open_price = Cells(Looper + 1, 3).Value
+     tot_vol = Cells(Looper + 1, 7).Value
+     
+     tot_int = tot_int + 1 
+  
+  End If
+ 
+   If Symbol2 = "" Then 
+      Exit For
+   End If
+
+ Next
+ 
+   Call GreatestInfo
+ 
+ End Sub
+ ----------------------------------------------------------------------------------------------
+ Sub GreatestInfo() 
+ 
+ Dim Looper As Long 
+ Dim gr_end_sym As String 
+ Dim gr_inc As Double 
+ Dim gr_inc_sym As String 
+ Dim gr_dec As Double 
+ Dim gr_dec_sym As String 
+ Dim gr_vol As Double 
+ Dim gr_vol_sym As String 
+ Dim gr_num As Double 
+                                     
+ gr_inc_sym = "START"  
+ gr_dec_sym = "START"
+ gr_vol_sym = "START"
+ gr_end_sym = "START"
+  
+ gr_inc = 0
+ gr_dec = 0
+ gr_vol = 0
+ 
+ Range("P1").Value = "Ticker" 
+ Range("Q1").Value = "Value"
+ Range("P1:Q1").Interior.ColorIndex = 15
+ Range("P1:Q1").Borders(xlEdgeBottom).LineStyle = xlContinuous
+ 
+ Range("O2").Value = "Greatest % Increase"
+ Range("O3").Value = "Greatest % Decrease"
+ Range("O4").Value = "Greatest Total Volume"
+
+For Looper = 2 To 1048576 
+ 
+ If Cells(Looper, 11).Value <> "N/A" And Cells(Looper, 11).Value > gr_inc Then 
+    gr_inc_sym = Cells(Looper, 9).Value
+    gr_inc = Cells(Looper, 11).Value
+ End If
+
+ If Cells(Looper, 11).Value <> "N/A" And Cells(Looper, 11).Value < gr_dec Then  
+    gr_dec_sym = Cells(Looper, 9).Value
+    gr_dec = Cells(Looper, 11).Value
+ End If
+
+ If Cells(Looper, 12).Value > gr_vol Then                                      
+    gr_vol_sym = Cells(Looper, 9).Value
+    gr_vol = Cells(Looper, 12).Value
+ End If
+                                                      
+  gr_end_sym = Cells(Looper2 + 1, 9).Value             
+  
+  If gr_end_sym = "" Then
+    Exit For
+  End If
+
+Next
+
+ Range("P2") = gr_inc_sym                            
+ Range("Q2") = gr_inc
+ Range("P3") = gr_dec_sym
+ Range("Q3") = gr_dec
+ Range("P4") = gr_vol_sym
+ Range("Q4") = gr_vol
+
+End Sub
